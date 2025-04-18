@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="app-layout.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.198991"
+     inkscape:cx="512.51426"
+     inkscape:cy="391.99626"
+     inkscape:window-width="1908"
+     inkscape:window-height="1004"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#cccccc;stroke:#1b0096;stroke-width:0.2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.998953"
+       id="rect1"
+       width="117.08755"
+       height="117.08755"
+       x="46.456226"
+       y="33.080853" />
+    <g
+       id="g9"
+       transform="translate(-7.6062927,-67.966869)">
+      <rect
+         style="fill:#faf9f2;fill-opacity:0.882297;stroke:#1679a3;stroke-width:0.201295;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.998953"
+         id="rect2"
+         width="66.282471"
+         height="10.490752"
+         x="79.465057"
+         y="122.07014" />
+      <text
+         xml:space="preserve"
+         style="font-size:5.47125px;line-height:0px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#808080;fill-opacity:0.882297;stroke:#8ce4f0;stroke-width:0.258484;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.602292"
+         x="81.664131"
+         y="129.27107"
+         id="text2"><tspan
+           sodipodi:role="line"
+           style="stroke:#8ce4f0;stroke-width:0.258484;stroke-opacity:0.602292"
+           x="81.664131"
+           y="129.27107"
+           id="tspan3">Search</tspan></text>
+      <g
+         id="g8"
+         transform="matrix(0.18081016,0,0,0.18081016,162.35042,112.66896)">
+        <circle
+           style="fill:none;fill-opacity:0.882297;stroke:#000000;stroke-width:3.49783;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="path4"
+           cx="-130.9953"
+           cy="80.360565"
+           r="12.825373" />
+        <path
+           style="fill:none;fill-opacity:0.882297;stroke:#000000;stroke-width:1.94688;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           d="m -119.41101,85.875649 13.2963,8.102442 -0.55341,0.9082 -13.29633,-8.102442 z"
+           id="path5" />
+      </g>
+    </g>
+  </g>
+</svg>
