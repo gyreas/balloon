@@ -4,27 +4,39 @@ void main() {
   runApp(Balloon());
 }
 
+const int minSupportedScreenWidth = 450;
+
 class Balloon extends StatelessWidget {
   const Balloon({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SearchBar(prompt: "Search", radius: 12, width: 444),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var screenWidth = constraints.maxWidth;
+        return (screenWidth > minSupportedScreenWidth)
+            ? _build(screenWidth * .7)
+            : MaterialApp();
+      },
     );
   }
+
+  // TODO: build the search bar differently, this is overkill
+  Widget _build(double searchbarWidth) => MaterialApp(
+    home: Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SearchBar(prompt: "Search...", radius: 12, width: searchbarWidth),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class SearchBar extends StatelessWidget {
@@ -35,8 +47,8 @@ class SearchBar extends StatelessWidget {
 
   const SearchBar({
     super.key,
-    this.prompt = "Search",
-    this.fieldLabel,
+    this.prompt = "Search...",
+    this.fieldLabel = "Search",
     this.radius = 4,
     required this.width,
   });
@@ -46,6 +58,7 @@ class SearchBar extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextField(
+        cursorColor: Colors.black,
         decoration: InputDecoration(
           labelText: fieldLabel,
           hintText: prompt,
