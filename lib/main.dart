@@ -4,7 +4,7 @@ void main() {
   runApp(Balloon());
 }
 
-const int minSupportedScreenWidth = 450;
+const int minSupportedScreenWidth = 200;
 
 class Balloon extends StatelessWidget {
   const Balloon({super.key});
@@ -14,26 +14,23 @@ class Balloon extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         var screenWidth = constraints.maxWidth;
-        return (screenWidth > minSupportedScreenWidth)
+        return (screenWidth >= minSupportedScreenWidth)
             ? _build(screenWidth * .7)
-            : MaterialApp();
+            : MaterialApp(
+              home: Scaffold(body: Align(child: Text("Too small"))),
+            );
       },
     );
   }
 
-  // TODO: build the search bar differently, this is overkill
   Widget _build(double searchbarWidth) => MaterialApp(
     home: Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SearchBar(prompt: "Search...", radius: 12, width: searchbarWidth),
-            ],
-          ),
-        ],
+      body: Align(
+        child: SearchBar(
+          prompt: "Search...",
+          radius: 12,
+          width: searchbarWidth,
+        ),
       ),
     ),
   );
