@@ -1,5 +1,5 @@
 [editor]
-end-of-line-diagnostics = "hint"
+end-of-line-diagnostics = "disable"
 
 [editor.lsp]
 enable              = true
@@ -9,7 +9,7 @@ auto-signature-help = false
 display-inlay-hints = true
 
 [editor.inline-diagnostics]
-cursor-line = "warning" # show warnings and errors on the cursorline inline
+cursor-line = "disable" # show warnings and errors on the cursorline inline
 max-diagnostics = 8
 other-lines = "disable"
 prefix-len = 2
