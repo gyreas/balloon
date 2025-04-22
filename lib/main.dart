@@ -11,33 +11,36 @@ class Balloon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        var screenWidth = constraints.maxWidth;
-        return (screenWidth >= minSupportedScreenWidth)
-            ? _build(screenWidth * .7)
-            : MaterialApp(
-              home: Scaffold(body: Align(child: Text("Too small"))),
-            );
-      },
-    );
-  }
+    return MaterialApp(
+      home: Scaffold(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            var searchbarWidth = constraints.maxWidth * .8;
 
-  Widget _build(double searchbarWidth) => MaterialApp(
-    home: Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SearchBar(prompt: "Search...", radius: 12, width: searchbarWidth),
-            SearchResultsList(),
-          ],
+            if (constraints.maxWidth <= minSupportedScreenWidth) {
+              return Align(child: Text("Too small"));
+            }
+
+            return Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SearchBar(
+                    prompt: "Search...",
+                    radius: 12,
+                    width: searchbarWidth,
+                  ),
+                  SearchResultsList(width: searchbarWidth),
+                ],
+              ),
+            );
+          },
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class SearchBar extends StatelessWidget {
@@ -75,29 +78,29 @@ class SearchBar extends StatelessWidget {
 }
 
 class SearchResultsList extends StatelessWidget {
-  const SearchResultsList({super.key});
+  final double width;
+  const SearchResultsList({super.key, required this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: AlignmentDirectional(0, 0),
       margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.all(0),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 1),
+        color: Colors.transparent,
+        border: Border.symmetric(horizontal: BorderSide(width: 1)),
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
-      width: 300,
+      width: width,
       height: 500,
-      child: ListView.builder(
+      child: (ListView.builder(
         itemCount: 144,
         itemBuilder:
             (context, index) => SearchResultTile(
               selected: index == 44,
               child: Text("Entry $index"),
             ),
-      ),
+      )),
     );
   }
 }
@@ -114,31 +117,21 @@ class SearchResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: ListTile paints the Tiles that are marked as selected even when they're
-    // not within the ListView viewport, what's going on here?
-    return Container(
-      padding: EdgeInsets.all(2),
-      margin: EdgeInsets.all(0),
-      color: selected ? Colors.cyan : null,
-      child: SearchResultItem(child: child),
-    );
-  }
-}
-
-class SearchResultItem extends StatelessWidget {
-  final Widget child;
-  const SearchResultItem({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(width: 1),
-        color: Colors.greenAccent,
+    return Material(
+      child: Container(
+        decoration: BoxDecoration(
+          border: selected ? Border.all(width: 1) : Border.all(width: 0),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        margin: const EdgeInsets.only(top: 3, bottom: 4, left: 14, right: 14),
+        height: 44,
+        alignment: Alignment.center,
+        child: ListTile(
+          title: child,
+          selected: selected,
+          selectedTileColor: Colors.cyan,
+        ),
       ),
-      margin: const EdgeInsets.only(left: 4, right: 4),
-      height: 64,
-      child: child,
     );
   }
 }
