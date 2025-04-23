@@ -1,3 +1,4 @@
+import 'package:balloon/search_list.dart' show loadN;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -6,8 +7,15 @@ void main() {
 
 const int minSupportedScreenWidth = 200;
 
-class Balloon extends StatelessWidget {
+class Balloon extends StatefulWidget {
   const Balloon({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _BalloonState();
+}
+
+class _BalloonState extends State<Balloon> {
+  ResultListNotifier listNotifier = ResultListNotifier();
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +39,22 @@ class Balloon extends StatelessWidget {
                     prompt: "Search...",
                     radius: 12,
                     width: searchbarWidth,
+                    onChanged: (resultList) {
+                      print("Main::onChanged");
+                      listNotifier.resultList = resultList;
+                      listNotifier.notify();
+                    },
                   ),
-                  SearchResultsList(width: searchbarWidth),
+                  ListenableBuilder(
+                    listenable: listNotifier,
+                    builder:
+                        (context, child) => SearchResultsList(
+                          width: searchbarWidth,
+                          // TODO: inefficient
+                          index: listNotifier.index,
+                          list: listNotifier.resultList,
+                        ),
+                  ),
                 ],
               ),
             );
@@ -43,11 +65,23 @@ class Balloon extends StatelessWidget {
   }
 }
 
+class ResultListNotifier extends ChangeNotifier {
+  int index = 0;
+  List<String> resultList = [];
+
+  void notify() {
+    notifyListeners();
+  }
+}
+
+List<String> strings = loadN(444);
+
 class SearchBar extends StatelessWidget {
   final String prompt;
   final String? fieldLabel;
   final double width;
   final double radius;
+  final ValueChanged<List<String>> onChanged;
 
   const SearchBar({
     super.key,
@@ -55,6 +89,7 @@ class SearchBar extends StatelessWidget {
     this.fieldLabel = "Search",
     this.radius = 4,
     required this.width,
+    required this.onChanged,
   });
 
   @override
@@ -72,36 +107,73 @@ class SearchBar extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(radius)),
           ),
         ),
+        onChanged: (finalQuery) {
+          // TODO: perform the search here
+          onChanged(_search(finalQuery, strings));
+        },
       ),
     );
   }
+
+  // TODO: do this async
+  List<String> _search(String query, List<String> source) {
+    if (query.isEmpty) {
+      return [];
+    }
+
+    var resultList = <String>[];
+    for (var s in strings) {
+      if (s.contains(query)) {
+        resultList.add(s);
+      }
+    }
+    return resultList;
+  }
+}
+
+class NullWidget extends StatelessWidget {
+  const NullWidget({super.key});
+  @override
+  Widget build(BuildContext context) => Material();
 }
 
 class SearchResultsList extends StatelessWidget {
   final double width;
-  const SearchResultsList({super.key, required this.width});
+  final int? index;
+  final List<String> list;
+
+  const SearchResultsList({
+    super.key,
+    this.index,
+    required this.width,
+    required this.list,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.all(0),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border.symmetric(horizontal: BorderSide(width: 1)),
-        borderRadius: BorderRadius.all(Radius.circular(2)),
-      ),
-      width: width,
-      height: 500,
-      child: (ListView.builder(
-        itemCount: 144,
-        itemBuilder:
-            (context, index) => SearchResultTile(
-              selected: index == 44,
-              child: Text("Entry $index"),
-            ),
-      )),
-    );
+    return list.isEmpty
+        ? NullWidget()
+        : Container(
+          margin: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.all(0),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            border: Border.symmetric(horizontal: BorderSide(width: 1)),
+            borderRadius: BorderRadius.all(Radius.circular(1)),
+          ),
+          width: width,
+          height: 500,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(0),
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              return SearchResultTile(
+                selected: this.index == index,
+                child: Text(list[index], overflow: TextOverflow.ellipsis),
+              );
+            },
+          ),
+        );
   }
 }
 
