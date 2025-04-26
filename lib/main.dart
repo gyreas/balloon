@@ -51,7 +51,7 @@ class _BalloonState extends State<Balloon> {
               return Align(child: Text("Too small"));
             }
 
-            return Container(
+            return Align(
               alignment: Alignment.center,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -61,9 +61,10 @@ class _BalloonState extends State<Balloon> {
                     prompt: "Search...",
                     radius: 12,
                     width: searchbarWidth,
-                    onChanged: (resultList) {
+                    onResultListUpdated: (resultList, isQueryEmpty) {
                       print("Main::onChanged");
                       listNotifier.resultList = resultList;
+                      listNotifier.wasQueryEmpty = isQueryEmpty;
                       listNotifier.notify();
                     },
                   ),
@@ -72,8 +73,8 @@ class _BalloonState extends State<Balloon> {
                     builder:
                         (context, child) => SearchResultsList(
                           width: searchbarWidth,
+                          wasQueryEmpty: listNotifier.wasQueryEmpty,
                           // TODO: inefficient
-                          index: listNotifier.index,
                           list: listNotifier.resultList,
                         ),
                   ),
@@ -88,22 +89,21 @@ class _BalloonState extends State<Balloon> {
 }
 
 class ResultListNotifier extends ChangeNotifier {
-  int index = 0;
+  bool wasQueryEmpty = true;
   List<String> resultList = [];
 
-  void notify() {
-    notifyListeners();
-  }
+  void notify() => notifyListeners();
 }
 
 List<String> strings = loadN(444);
+typedef ResultListUpdatedCallback = Function(List<String>, bool);
 
 class SearchBar extends StatelessWidget {
   final String prompt;
   final String? fieldLabel;
   final double width;
   final double radius;
-  final ValueChanged<List<String>> onChanged;
+  final ResultListUpdatedCallback onResultListUpdated;
 
   const SearchBar({
     super.key,
@@ -111,7 +111,7 @@ class SearchBar extends StatelessWidget {
     this.fieldLabel = "Search",
     this.radius = 4,
     required this.width,
-    required this.onChanged,
+    required this.onResultListUpdated,
   });
 
   @override
@@ -131,7 +131,12 @@ class SearchBar extends StatelessWidget {
         ),
         onChanged: (finalQuery) {
           // TODO: perform the search here
-          onChanged(_search(finalQuery, strings));
+          finalQuery.isEmpty
+              ? onResultListUpdated([], finalQuery.isEmpty)
+              : onResultListUpdated(
+                _search(finalQuery, strings),
+                finalQuery.isNotEmpty,
+              );
         },
       ),
     );
@@ -159,21 +164,33 @@ class NullWidget extends StatelessWidget {
   Widget build(BuildContext context) => Material();
 }
 
-class SearchResultsList extends StatelessWidget {
+class SearchResultsList extends StatefulWidget {
   final double width;
-  final int? index;
+  final bool wasQueryEmpty;
   final List<String> list;
 
   const SearchResultsList({
     super.key,
-    this.index,
+    required this.wasQueryEmpty,
     required this.width,
     required this.list,
   });
 
   @override
+  State<StatefulWidget> createState() => _SearchResultsListState();
+}
+
+class _SearchResultsListState extends State<SearchResultsList> {
+  int _selectedIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return list.isEmpty
+    var theList = widget;
+    if (theList.wasQueryEmpty) {
+      _selectedIndex = 0;
+    }
+
+    return theList.list.isEmpty
         ? NullWidget()
         : Container(
           margin: const EdgeInsets.only(top: 20),
@@ -183,15 +200,19 @@ class SearchResultsList extends StatelessWidget {
             border: Border.symmetric(horizontal: BorderSide(width: 1)),
             borderRadius: BorderRadius.all(Radius.circular(1)),
           ),
-          width: width,
+          width: theList.width,
           height: 500,
           child: ListView.builder(
             padding: const EdgeInsets.all(0),
-            itemCount: list.length,
+            itemCount: theList.list.length,
             itemBuilder: (context, index) {
               return SearchResultTile(
-                selected: this.index == index,
-                child: Text(list[index], overflow: TextOverflow.ellipsis),
+                isSelected: _selectedIndex == index,
+                onTap: () => setState(() => _selectedIndex = index),
+                child: Text(
+                  theList.list[index],
+                  overflow: TextOverflow.ellipsis,
+                ),
               );
             },
           ),
@@ -201,11 +222,13 @@ class SearchResultsList extends StatelessWidget {
 
 class SearchResultTile extends StatelessWidget {
   final Widget child;
-  final bool selected;
+  final bool isSelected;
+  final GestureTapCallback? onTap;
 
   const SearchResultTile({
     super.key,
-    this.selected = false,
+    this.isSelected = false,
+    this.onTap,
     required this.child,
   });
 
@@ -214,7 +237,7 @@ class SearchResultTile extends StatelessWidget {
     return Material(
       child: Container(
         decoration: BoxDecoration(
-          border: selected ? Border.all(width: 1) : Border.all(width: 0),
+          border: isSelected ? Border.all(width: 1) : Border.all(width: 0),
           borderRadius: BorderRadius.all(Radius.circular(4)),
         ),
         margin: const EdgeInsets.only(top: 3, bottom: 4, left: 14, right: 14),
@@ -222,8 +245,9 @@ class SearchResultTile extends StatelessWidget {
         alignment: Alignment.center,
         child: ListTile(
           title: child,
-          selected: selected,
+          selected: isSelected,
           selectedTileColor: Colors.cyan,
+          onTap: onTap,
         ),
       ),
     );
