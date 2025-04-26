@@ -37,7 +37,20 @@ class Balloon extends StatefulWidget {
 }
 
 class _BalloonState extends State<Balloon> {
-  ResultListNotifier listNotifier = ResultListNotifier();
+  late final SearchController searchbarController;
+
+  @override
+  void initState() {
+    super.initState();
+    searchbarController = SearchController(locations: loadN(444));
+    searchbarController.addListener(() {});
+  }
+
+  @override
+  void dispose() {
+    searchbarController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,25 +70,24 @@ class _BalloonState extends State<Balloon> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SearchBar(
-                    prompt: "Search...",
-                    radius: 12,
-                    width: searchbarWidth,
-                    onResultListUpdated: (resultList, isQueryEmpty) {
-                      print("Main::onChanged");
-                      listNotifier.resultList = resultList;
-                      listNotifier.wasQueryEmpty = isQueryEmpty;
-                      listNotifier.notify();
-                    },
+                  ListenableBuilder(
+                    listenable: searchbarController,
+                    builder:
+                        (context, child) => SearchBar(
+                          prompt: "Search...",
+                          radius: 12,
+                          width: searchbarWidth,
+                          searchController: searchbarController,
+                        ),
                   ),
                   ListenableBuilder(
-                    listenable: listNotifier,
+                    listenable: searchbarController,
                     builder:
                         (context, child) => SearchResultsList(
                           width: searchbarWidth,
-                          wasQueryEmpty: listNotifier.wasQueryEmpty,
+                          wasQueryEmpty: searchbarController.query.isEmpty,
                           // TODO: inefficient
-                          list: listNotifier.resultList,
+                          list: searchbarController.filteredItems,
                         ),
                   ),
                 ],
@@ -88,30 +100,18 @@ class _BalloonState extends State<Balloon> {
   }
 }
 
-class ResultListNotifier extends ChangeNotifier {
-  bool wasQueryEmpty = true;
-  List<String> resultList = [];
-
-  void notify() => notifyListeners();
-}
-
-List<String> strings = loadN(444);
-typedef ResultListUpdatedCallback = Function(List<String>, bool);
-
 class SearchBar extends StatelessWidget {
   final String prompt;
-  final String? fieldLabel;
   final double width;
   final double radius;
-  final ResultListUpdatedCallback onResultListUpdated;
+  final SearchController searchController;
 
   const SearchBar({
     super.key,
     this.prompt = "Search...",
-    this.fieldLabel = "Search",
     this.radius = 4,
     required this.width,
-    required this.onResultListUpdated,
+    required this.searchController,
   });
 
   @override
@@ -122,47 +122,62 @@ class SearchBar extends StatelessWidget {
       child: TextField(
         cursorColor: Colors.black,
         decoration: InputDecoration(
-          labelText: fieldLabel,
           hintText: prompt,
           fillColor: Colors.amber,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(radius)),
           ),
         ),
-        onChanged: (finalQuery) {
-          // TODO: perform the search here
-          finalQuery.isEmpty
-              ? onResultListUpdated([], finalQuery.isEmpty)
-              : onResultListUpdated(
-                _search(finalQuery, strings),
-                finalQuery.isNotEmpty,
-              );
+        onChanged: (query) {
+          searchController.updateQuery(query);
         },
       ),
     );
   }
+}
 
-  // TODO: do this async
-  List<String> _search(String query, List<String> source) {
-    if (query.isEmpty) {
-      return [];
-    }
+class SearchController with ChangeNotifier {
+  final List<String> locations;
+  List<String> _filteredItems = [];
 
-    var resultList = <String>[];
-    for (var s in strings) {
-      if (s.contains(query)) {
-        resultList.add(s);
-      }
+  String _query = '';
+
+  SearchController({required this.locations}) {
+    _filteredItems = locations; // show all locations first
+  }
+
+  List<String> get filteredItems => _filteredItems;
+  String get query => _query;
+
+  void updateQuery(String newQuery) {
+    _query = newQuery;
+    _search();
+  }
+
+  void _search() {
+    if (_query.isEmpty) {
+      _filteredItems = [];
+    } else {
+      _filteredItems =
+          locations
+              .where(
+                (item) => item.toLowerCase().contains(_query.toLowerCase()),
+              )
+              .toList();
     }
-    return resultList;
+    notifyListeners();
   }
 }
+
+// NullWidget
 
 class NullWidget extends StatelessWidget {
   const NullWidget({super.key});
   @override
   Widget build(BuildContext context) => Material();
 }
+
+// Results List
 
 class SearchResultsList extends StatefulWidget {
   final double width;
@@ -219,6 +234,8 @@ class _SearchResultsListState extends State<SearchResultsList> {
         );
   }
 }
+
+// Result Tile
 
 class SearchResultTile extends StatelessWidget {
   final Widget child;
