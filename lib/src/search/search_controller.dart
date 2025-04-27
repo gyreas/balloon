@@ -30,10 +30,8 @@ class SearchController with ChangeNotifier {
 
   void _startDebounceTimer() {
     // reset the debounce unconditionally
-    if (_debounceTimer != null) {
-      _debounceTimer!.cancel();
-    }
-    _debounceTimer = Timer.periodic(_debounce, (timer) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(_debounce, () {
       _search();
     });
   }
