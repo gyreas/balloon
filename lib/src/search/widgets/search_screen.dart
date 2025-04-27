@@ -46,12 +46,18 @@ class _SearchScreenState extends State<SearchScreen> {
                 ListenableBuilder(
                   listenable: searchbarController,
                   builder:
-                      (context, child) => SearchResultsList(
-                        width: searchbarWidth,
-                        wasQueryEmpty: searchbarController.query.isEmpty,
-                        // TODO: inefficient
-                        list: searchbarController.filteredItems,
-                      ),
+                      (context, child) =>
+                          searchbarController.isLoading
+                              ? CircularProgressIndicator(
+                                color: Colors.cyanAccent,
+                              )
+                              : SearchResultsList(
+                                width: searchbarWidth,
+                                wasQueryEmpty:
+                                    searchbarController.query.isEmpty,
+                                // TODO: inefficient
+                                list: searchbarController.filteredItems,
+                              ),
                 ),
               ],
             ),
