@@ -60,39 +60,35 @@ class _BalloonState extends State<Balloon> {
           builder: (context, constraints) {
             var searchbarWidth = constraints.maxWidth * .8;
 
-            if (constraints.maxWidth <= minSupportedScreenWidth) {
-              return Align(child: Text("Too small"));
-            }
-
-            return Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ListenableBuilder(
-                    listenable: searchbarController,
-                    builder:
-                        (context, child) => SearchBar(
-                          prompt: "Search...",
-                          radius: 12,
-                          width: searchbarWidth,
-                          searchController: searchbarController,
-                        ),
+            return constraints.maxWidth <= minSupportedScreenWidth
+                ? Align(child: Text("Too small"))
+                : Align(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ListenableBuilder(
+                        listenable: searchbarController,
+                        builder:
+                            (context, child) => SearchBar(
+                              width: searchbarWidth,
+                              searchController: searchbarController,
+                            ),
+                      ),
+                      ListenableBuilder(
+                        listenable: searchbarController,
+                        builder:
+                            (context, child) => SearchResultsList(
+                              width: searchbarWidth,
+                              wasQueryEmpty: searchbarController.query.isEmpty,
+                              // TODO: inefficient
+                              list: searchbarController.filteredItems,
+                            ),
+                      ),
+                    ],
                   ),
-                  ListenableBuilder(
-                    listenable: searchbarController,
-                    builder:
-                        (context, child) => SearchResultsList(
-                          width: searchbarWidth,
-                          wasQueryEmpty: searchbarController.query.isEmpty,
-                          // TODO: inefficient
-                          list: searchbarController.filteredItems,
-                        ),
-                  ),
-                ],
-              ),
-            );
+                );
           },
         ),
       ),
@@ -123,10 +119,8 @@ class SearchBar extends StatelessWidget {
         cursorColor: Colors.black,
         decoration: InputDecoration(
           hintText: prompt,
-          fillColor: Colors.amber,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(radius)),
-          ),
+          // TODO: this gets overridden within the TextField constructor logic somewhere, so theming is adviced
+          border: OutlineInputBorder(),
         ),
         onChanged: (query) {
           searchController.updateQuery(query);
@@ -155,16 +149,17 @@ class SearchController with ChangeNotifier {
   }
 
   void _search() {
-    if (_query.isEmpty) {
-      _filteredItems = [];
-    } else {
-      _filteredItems =
-          locations
-              .where(
-                (item) => item.toLowerCase().contains(_query.toLowerCase()),
-              )
-              .toList();
-    }
+    _filteredItems =
+        _query.isEmpty
+            ? []
+            : _filteredItems =
+                locations
+                    .where(
+                      (item) =>
+                          item.toLowerCase().contains(_query.toLowerCase()),
+                    )
+                    .toList();
+
     notifyListeners();
   }
 }
