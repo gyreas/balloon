@@ -24,7 +24,10 @@ class SearchResultTile extends StatelessWidget {
         minTileHeight: 24,
         minLeadingWidth: 80,
         contentPadding: EdgeInsets.all(1),
-        title: child,
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: child,
+        ),
         selected: isSelected,
         selectedTileColor: Colors.lightBlue,
         onTap: onTap,

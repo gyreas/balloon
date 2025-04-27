@@ -36,29 +36,32 @@ class _SearchResultsListState extends State<SearchResultsList> {
     return theList.list.isEmpty
         ? NullWidget()
         : Material(
-          child: SizedBox(
-            width: theList.width,
-            height: 500,
-            child: ListView.builder(
-              padding: const EdgeInsets.all(0),
-              itemCount: theList.list.length,
-              itemBuilder: (context, index) {
-                var isSelected = _selectedIndex == index;
-                return SearchResultTile(
-                  isSelected: isSelected,
-                  onTap: () => setState(() => _selectedIndex = index),
-                  child: Text(
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight:
-                          isSelected ? FontWeight.w500 : FontWeight.w400,
-                      color: isSelected ? Colors.white : Colors.black,
+          child: DecoratedBox(
+            decoration: BoxDecoration(border: Border.all()),
+            child: SizedBox(
+              width: theList.width,
+              height: 500,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(0),
+                itemCount: theList.list.length,
+                itemBuilder: (context, index) {
+                  bool isSelected = _selectedIndex == index;
+                  return SearchResultTile(
+                    isSelected: isSelected,
+                    onTap: () => setState(() => _selectedIndex = index),
+                    child: Text(
+                      theList.list[index],
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight:
+                            isSelected ? FontWeight.w500 : FontWeight.w400,
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    theList.list[index],
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         );
