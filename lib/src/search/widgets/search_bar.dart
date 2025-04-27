@@ -29,8 +29,14 @@ class SearchBar extends StatelessWidget {
         cursorColor: Colors.black,
         decoration: InputDecoration(
           hintText: prompt,
-          // TODO: this gets overridden within the TextField constructor logic somewhere, so theming is adviced
-          border: OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.cyan, width: 2),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(2),
+            borderSide: BorderSide(color: Colors.cyan, width: 2),
+          ),
         ),
         onChanged: (query) {
           searchController.updateQuery(query);
