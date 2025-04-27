@@ -18,21 +18,16 @@ class SearchResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        decoration: BoxDecoration(
-          border: isSelected ? Border.all(width: 1) : Border.all(width: 0),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        margin: const EdgeInsets.only(top: 3, bottom: 4, left: 14, right: 14),
-        height: 44,
-        alignment: Alignment.center,
-        child: ListTile(
-          title: child,
-          selected: isSelected,
-          selectedTileColor: Colors.cyan,
-          onTap: onTap,
-        ),
+    return SizedBox(
+      height: 33,
+      child: ListTile(
+        minTileHeight: 24,
+        minLeadingWidth: 80,
+        contentPadding: EdgeInsets.all(1),
+        title: child,
+        selected: isSelected,
+        selectedTileColor: Colors.lightBlue,
+        onTap: onTap,
       ),
     );
   }

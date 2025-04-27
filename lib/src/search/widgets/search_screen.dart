@@ -42,6 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         searchController: searchbarController,
                       ),
                 ),
+                SizedBox(height: 10),
                 ListenableBuilder(
                   listenable: searchbarController,
                   builder:

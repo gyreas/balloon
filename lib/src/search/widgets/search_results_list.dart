@@ -35,29 +35,31 @@ class _SearchResultsListState extends State<SearchResultsList> {
 
     return theList.list.isEmpty
         ? NullWidget()
-        : Container(
-          margin: const EdgeInsets.only(top: 20),
-          padding: const EdgeInsets.all(0),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            border: Border.symmetric(horizontal: BorderSide(width: 1)),
-            borderRadius: BorderRadius.all(Radius.circular(1)),
-          ),
-          width: theList.width,
-          height: 500,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(0),
-            itemCount: theList.list.length,
-            itemBuilder: (context, index) {
-              return SearchResultTile(
-                isSelected: _selectedIndex == index,
-                onTap: () => setState(() => _selectedIndex = index),
-                child: Text(
-                  theList.list[index],
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
-            },
+        : Material(
+          child: SizedBox(
+            width: theList.width,
+            height: 500,
+            child: ListView.builder(
+              padding: const EdgeInsets.all(0),
+              itemCount: theList.list.length,
+              itemBuilder: (context, index) {
+                var isSelected = _selectedIndex == index;
+                return SearchResultTile(
+                  isSelected: isSelected,
+                  onTap: () => setState(() => _selectedIndex = index),
+                  child: Text(
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight:
+                          isSelected ? FontWeight.w500 : FontWeight.w400,
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
+                    theList.list[index],
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              },
+            ),
           ),
         );
   }
