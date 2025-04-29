@@ -10,8 +10,6 @@ void main() {
   runApp(Balloon());
 }
 
-const int minSupportedScreenWidth = 200;
-
 class Balloon extends StatelessWidget {
   const Balloon({super.key});
 
