@@ -9,8 +9,6 @@ import '../search_data.dart' show loadN;
 import 'search_bar.dart' as sbar;
 import 'search_results_list.dart' show SearchResultsList;
 
-const int _minSupportedScreenWidth = 200;
-
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -19,62 +17,58 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late final sctrl.SearchController searchbarController;
+  late final sctrl.SearchController controller;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      var searchbarWidth = constraints.maxWidth * .8;
+      var searchbarWidth = constraints.maxWidth * .94;
 
-      return constraints.maxWidth <= _minSupportedScreenWidth
-          ? Align(child: Text("Too small"))
-          : Align(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ListenableBuilder(
-                  listenable: searchbarController,
-                  builder:
-                      (context, child) => sbar.SearchBar(
-                        width: searchbarWidth,
-                        searchController: searchbarController,
-                      ),
-                ),
-                SizedBox(height: 10),
-                ListenableBuilder(
-                  listenable: searchbarController,
-                  builder:
-                      (context, child) =>
-                          searchbarController.isLoading
-                              ? CircularProgressIndicator(
-                                color: Colors.cyanAccent,
-                              )
-                              : SearchResultsList(
-                                width: searchbarWidth,
-                                wasQueryEmpty:
-                                    searchbarController.query.isEmpty,
-                                // TODO: inefficient
-                                list: searchbarController.filteredItems,
-                              ),
-                ),
-              ],
+      return Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ListenableBuilder(
+              listenable: controller,
+              builder:
+                  (context, child) =>
+                      controller.isLoading
+                          ? CircularProgressIndicator(color: Colors.cyanAccent)
+                          : SearchResultsList(
+                            width: searchbarWidth,
+                            wasQueryEmpty: controller.query.isEmpty,
+                            // TODO: inefficient
+                            list: controller.filteredItems,
+                          ),
             ),
-          );
+            SizedBox(height: 10),
+            ListenableBuilder(
+              listenable: controller,
+              builder:
+                  (context, child) => sbar.SearchBar(
+                    width: searchbarWidth,
+                    searchController: controller,
+                  ),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      );
     },
   );
 
   @override
   void dispose() {
-    searchbarController.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    searchbarController = sctrl.SearchController(locations: loadN(444));
-    searchbarController.addListener(() {});
+    controller = sctrl.SearchController(locations: loadN(444));
+    controller.addListener(() {});
   }
 }
