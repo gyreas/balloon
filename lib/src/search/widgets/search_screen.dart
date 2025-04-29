@@ -49,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
               builder:
                   (context, child) => sbar.SearchBar(
                     width: searchbarWidth,
-                    searchController: controller,
+                    controller: controller,
                   ),
             ),
             SizedBox(height: 10),

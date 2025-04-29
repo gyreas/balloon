@@ -10,14 +10,14 @@ class SearchBar extends StatelessWidget {
   final String prompt;
   final double width;
   final double radius;
-  final sctrl.SearchController searchController;
+  final sctrl.SearchController controller;
 
   const SearchBar({
     super.key,
     this.prompt = "Search...",
     this.radius = 4,
     required this.width,
-    required this.searchController,
+    required this.controller,
   });
 
   @override
@@ -39,7 +39,7 @@ class SearchBar extends StatelessWidget {
           ),
         ),
         onChanged: (query) {
-          searchController.updateQuery(query);
+          controller.updateQuery(query);
         },
       ),
     );
