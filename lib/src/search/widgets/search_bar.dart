@@ -9,6 +9,7 @@ import '../search_controller.dart' as sctrl;
 class SearchBar extends StatelessWidget {
   final String prompt;
   final double width;
+  final double height;
   final double radius;
   final sctrl.SearchController controller;
 
@@ -17,30 +18,38 @@ class SearchBar extends StatelessWidget {
     this.prompt = "Search...",
     this.radius = 4,
     required this.width,
+    required this.height,
     required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 0),
+    return SizedBox(
       width: width,
-      child: TextField(
-        cursorColor: Colors.black,
-        decoration: InputDecoration(
-          hintText: prompt,
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.cyan, width: 2),
-            borderRadius: BorderRadius.circular(2),
+      // height: height,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          TextField(
+            cursorColor: Colors.blue,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              hoverColor: Colors.white,
+              hintText: prompt,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+              ),
+            ),
+            onChanged: (query) {
+              controller.updateQuery(query);
+            },
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(2),
-            borderSide: BorderSide(color: Colors.cyan, width: 2),
-          ),
-        ),
-        onChanged: (query) {
-          controller.updateQuery(query);
-        },
+        ],
       ),
     );
   }

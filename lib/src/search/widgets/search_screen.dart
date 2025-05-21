@@ -22,38 +22,47 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      var searchbarWidth = constraints.maxWidth * .94;
-
-      return Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ListenableBuilder(
-              listenable: controller,
-              builder:
-                  (context, child) =>
-                      controller.isLoading
-                          ? CircularProgressIndicator(color: Colors.cyanAccent)
-                          : SearchResultsList(
-                            width: searchbarWidth,
-                            wasQueryEmpty: controller.query.isEmpty,
-                            // TODO: inefficient
-                            list: controller.filteredItems,
-                          ),
-            ),
-            SizedBox(height: 10),
-            ListenableBuilder(
-              listenable: controller,
-              builder:
-                  (context, child) => sbar.SearchBar(
-                    width: searchbarWidth,
-                    controller: controller,
-                  ),
-            ),
-            SizedBox(height: 10),
-          ],
+      var searchbarWidth = constraints.maxWidth * .99;
+      var searchbarHeight = constraints.maxHeight * 0.077;
+      var resultListHeight = constraints.maxHeight - searchbarHeight;
+      var theme = Theme.of(context);
+      return ColoredBox(
+        color: theme.scaffoldBackgroundColor,
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ListenableBuilder(
+                listenable: controller,
+                builder:
+                    (context, child) =>
+                        controller.isLoading
+                            ? CircularProgressIndicator(
+                              color: Colors.cyanAccent,
+                            )
+                            : SearchResultsList(
+                              width: searchbarWidth,
+                              height: resultListHeight,
+                              wasQueryEmpty: controller.query.isEmpty,
+                              // TODO: inefficient
+                              list: controller.filteredItems,
+                            ),
+              ),
+              SizedBox(height: 4),
+              ListenableBuilder(
+                listenable: controller,
+                builder:
+                    (context, child) => sbar.SearchBar(
+                      height: searchbarHeight,
+                      width: searchbarWidth,
+                      controller: controller,
+                    ),
+              ),
+              SizedBox(height: 2),
+            ],
+          ),
         ),
       );
     },

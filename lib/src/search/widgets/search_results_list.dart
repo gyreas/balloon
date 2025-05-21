@@ -9,6 +9,7 @@ import 'search_result_tile.dart' show SearchResultTile;
 
 class SearchResultsList extends StatefulWidget {
   final double width;
+  final double height;
   final bool wasQueryEmpty;
   final List<String> list;
 
@@ -16,6 +17,7 @@ class SearchResultsList extends StatefulWidget {
     super.key,
     required this.wasQueryEmpty,
     required this.width,
+    required this.height,
     required this.list,
   });
 
@@ -33,35 +35,33 @@ class _SearchResultsListState extends State<SearchResultsList> {
       _selectedIndex = 0;
     }
 
+    const double gapHeight = 2;
     return theList.list.isEmpty
         ? NullWidget()
         : Material(
-          child: DecoratedBox(
-            decoration: BoxDecoration(border: Border.all()),
-            child: SizedBox(
-              width: theList.width,
-              height: 500,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(0),
-                itemCount: theList.list.length,
-                itemBuilder: (context, index) {
-                  bool isSelected = _selectedIndex == index;
-                  return SearchResultTile(
-                    isSelected: isSelected,
-                    onTap: () => setState(() => _selectedIndex = index),
-                    child: Text(
-                      theList.list[index],
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight:
-                            isSelected ? FontWeight.w500 : FontWeight.w400,
-                        color: isSelected ? Colors.white : Colors.black,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+          child: SizedBox(
+            width: theList.width,
+            height: theList.height,
+            child: ListView.builder(
+              padding: const EdgeInsets.all(0),
+              itemCount: theList.list.length,
+              reverse: true,
+              itemBuilder: (context, index) {
+                bool isSelected = _selectedIndex == index;
+                var searchTile = Column(
+                  children: [
+                    index == 0 ? NullWidget() : SizedBox(height: gapHeight),
+                    SearchResultTile(
+                      isSelected: isSelected,
+                      onTap: () => setState(() => _selectedIndex = index),
+                      content: theList.list[index],
                     ),
-                  );
-                },
-              ),
+                    SizedBox(height: gapHeight),
+                  ],
+                );
+
+                return searchTile;
+              },
             ),
           ),
         );

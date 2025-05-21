@@ -2,9 +2,10 @@
 // Copyright (c) 2025 Saheed Adeleye <aadesaed@gmail.com>
 // See LICENSE file in the project root for full license information.
 
-import 'package:balloon/src/search/widgets/search_screen.dart'
-    show SearchScreen;
 import 'package:flutter/material.dart';
+
+import 'src/core/themes/light.dart' show lightTheme;
+import 'src/search/widgets/search_screen.dart' show SearchScreen;
 
 void main() {
   runApp(Balloon());
@@ -15,6 +16,13 @@ class Balloon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: SearchScreen()));
+    return MaterialApp(
+      theme: lightTheme,
+      themeMode: ThemeMode.system,
+      home: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: SearchScreen(),
+      ),
+    );
   }
 }
