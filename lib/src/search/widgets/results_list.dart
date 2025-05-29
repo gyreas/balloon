@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/widgets/null_widget.dart' show NullWidget;
-import 'search_result_tile.dart' show SearchResultTile;
+import 'result_tile.dart' show SearchResultTile;
 
 class SearchResultsList extends StatefulWidget {
   final double width;

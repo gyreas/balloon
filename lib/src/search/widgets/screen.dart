@@ -4,10 +4,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../search_controller.dart' as sctrl;
+import '../controller.dart' as sctrl;
 import '../search_data.dart' show loadN;
-import 'search_bar.dart' as sbar;
-import 'search_results_list.dart' show SearchResultsList;
+import 'bar.dart' as sbar;
+import 'results_list.dart' show SearchResultsList;
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});

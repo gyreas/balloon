@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'src/core/themes/light.dart' show lightTheme;
-import 'src/search/widgets/search_screen.dart' show SearchScreen;
+import 'src/search/widgets/screen.dart' show SearchScreen;
 
 void main() {
   runApp(Balloon());

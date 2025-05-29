@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../search_controller.dart' as sctrl;
+import '../controller.dart' as sctrl;
 
 class SearchBar extends StatelessWidget {
   final String prompt;
