@@ -36,8 +36,6 @@ class SearchResultTile extends StatelessWidget {
               content,
               style: TextStyle(
                 fontSize: 11,
-                fontWeight:
-                    isSelected ? FontWeight.w500 : FontWeight.w400,
                 color: Theme.of(context).primaryColor,
               ),
               overflow: TextOverflow.ellipsis,
