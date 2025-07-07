@@ -22,9 +22,11 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-      var searchbarWidth = constraints.maxWidth * .99;
-      var searchbarHeight = constraints.maxHeight * 0.077;
-      var resultListHeight = constraints.maxHeight - searchbarHeight;
+      var searchbarWidth = constraints.maxWidth * 0.99;
+      var boxHeight = 4.0;
+      var remh = constraints.maxHeight - boxHeight;
+      var searchbarHeight = remh * .1;
+      var resultListHeight = remh - searchbarHeight;
       var theme = Theme.of(context);
       return ColoredBox(
         color: theme.scaffoldBackgroundColor,
@@ -50,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               list: controller.filteredItems,
                             ),
               ),
-              SizedBox(height: 4),
+              // SizedBox(height: 2),
               ListenableBuilder(
                 listenable: controller,
                 builder:
@@ -60,7 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       controller: controller,
                     ),
               ),
-              SizedBox(height: 2),
+              SizedBox(height: boxHeight),
             ],
           ),
         ),

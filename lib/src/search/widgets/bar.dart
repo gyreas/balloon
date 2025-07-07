@@ -28,7 +28,7 @@ class SearchBar extends StatelessWidget {
       width: width,
       // height: height,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           TextField(
